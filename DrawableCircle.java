@@ -1,7 +1,7 @@
 import java.awt.Color;
 
 public class DrawableCircle extends DrawableShape { 
-    private Double radius;
+    protected  Double radius;
 
     public DrawableCircle(Double x, Double y, Color color, Double radius) {
         super(x, y, color);

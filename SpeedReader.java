@@ -20,18 +20,17 @@ public class SpeedReader {
      */
     public static void show(String filename, int rate) {
 
-        // this sets up the window... don't forget to call it!
-        setup();
-
         try {
             Scanner scanner = new Scanner(new File(filename));
+            // this sets up the window
+            setup();
 
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 if (line.trim().isEmpty()) {
                     continue;
                 }
-
+                line = line.trim();
                 String[] words = line.split("\\s+");
 
                 for (String word : words) {
@@ -58,7 +57,7 @@ public class SpeedReader {
                     StdDraw.show();
 
                     // this causes the program to wait for 500ms
-                    int delay = 1000 / (rate / 60);
+                    int delay = (int) (60000.0 / rate);
                     StdDraw.pause(delay);
 
                     // this removes everything that is being displayed
@@ -99,7 +98,7 @@ public class SpeedReader {
 
     public static void main(String[] args) {
         // modify this code as needed in order to pass arguments to the show() method
-        if (args.length < 2) {
+        if (args.length < 2 || args.length > 2) {
             System.err.println("Please specify the filename and wpm");
             return;
         }

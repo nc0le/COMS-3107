@@ -1,8 +1,8 @@
 import java.awt.Color;
 
 public abstract class DrawableShape {
-    protected Double x;
-    protected Double y;
+    protected double x;
+    protected double y;
     protected Color shapeColor;
 
     public DrawableShape(Double x, Double y, Color color) {
