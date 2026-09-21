@@ -17,27 +17,63 @@ public class WordSearch {
 		}
 		
 		File[] files = dir.listFiles();		// get the Files in the specified directory
-		
-		// Implement the rest of this method starting from here!
 
-		// this is for debugging, just to make sure it's reading the right files
-        for (File file : files) {
-            System.out.println(file.getName());
-        }
-		
-		return Collections.EMPTY_MAP; // change this as necessary
-		
+		Map<String, Set<String>> map = new HashMap<>();
+
+		for (File file : files) {
+
+			try (Scanner scanner = new Scanner(file)) {
+				while (scanner.hasNext()) {
+					String word = scanner.next().toLowerCase();
+
+					if (!map.containsKey(word)) {
+						map.put(word, new HashSet<>());
+					}
+					map.get(word).add(file.getName());
+				}
+			} catch (FileNotFoundException e) {
+				e.printStackTrace(); 
+			}
+		}
+
+		return map;
 	}
 	
 	public static List<String> search(String[] terms, Map<String, Set<String>> map) {
-		// Implement this method starting from here!
+		ArrayList<String> result = new ArrayList<>();
+		Map<String, Integer> countMap = new HashMap<>();
 
-		return Collections.EMPTY_LIST; // change this as necessary
+		for (String term : terms) {
+			term = term.toLowerCase();
+
+			if (map.containsKey(term)) {
+				HashSet<String> files = (HashSet) map.get(term);
+
+				for (String file : files) {
+					countMap.put(file, countMap.getOrDefault(file, 0) + 1);
+				}
+			}
+		}
+
+		List<Map.Entry<String, Integer>> fileCounts = new ArrayList<>(countMap.entrySet());
+
+		fileCounts.sort((entry1, entry2) -> {
+			int countComparison = entry2.getValue().compareTo(entry1.getValue());
+			if (countComparison == 0) {
+				return entry1.getKey().compareTo(entry2.getKey());
+			}
+			return countComparison;
+		});
+
+		for (Map.Entry<String, Integer> file : fileCounts) {
+			result.add(file.getKey());
+		}
+		return result;
 	}
 	
 	public static void main(String[] args) {
 		Map<String, Set<String>> map = buildMap(args[0]);
-		//System.out.println(map); 					// for debugging purposes
+		System.out.println(map); 					// for debugging purposes
 		
 		System.out.print("Enter a term to search for: ");
 		
