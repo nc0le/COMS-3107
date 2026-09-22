@@ -122,8 +122,29 @@ public class Analyzer {
 			word + " expected " + expected + ", got " + actual
 		);
 	}
+
+	private static void checkSentenceScore(
+        Map<String, Double> wordScores,
+        String sentence,
+        double expected,
+        String testName) {
+
+		double actual =
+				calculateSentenceScore(wordScores, sentence);
+
+		if (Math.abs(actual - expected) < 0.0001) {
+			System.out.println("PASS: " + testName);
+		} else {
+			System.out.println(
+				"FAIL: " + testName +
+				"; expected " + expected +
+				", got " + actual
+			);
+		}
+	}
 	
 	public static void main(String[] args) {
+		System.out.println("Testing calculateWordScores...");
 		// 1. Null input should return null
 		check(
 			calculateWordScores(null) == null,
@@ -238,6 +259,101 @@ public class Analyzer {
 			allInvalidScores.isEmpty(),
 			"all invalid Sentences produce an empty map"
 		);
-	}
 
+		System.out.println("Testing calculateSentenceScore...");
+		Map<String, Double> wordScores = new HashMap<>();
+
+		wordScores.put("dogs", 2.0);
+		wordScores.put("are", 1.0);
+		wordScores.put("cute", 1.5);
+		wordScores.put("cats", -1.0);
+	
+		// Average of known words:
+		checkSentenceScore(
+			wordScores,
+			"dogs are cute",
+			1.5,
+			"average of known words"
+		);
+	
+		// Repeated words must be counted repeatedly:
+		checkSentenceScore(
+			wordScores,
+			"dogs dogs are",
+			5.0 / 3.0,
+			"repeated words"
+		);
+	
+		// Unknown words receive a score of zero:
+		checkSentenceScore(
+			wordScores,
+			"dogs are funny",
+			1.0,
+			"unknown word receives zero"
+		);
+	
+		// ?smart is ignored because it does not start with a letter:
+		checkSentenceScore(
+			wordScores,
+			"dogs are ?smart",
+			1.5,
+			"token not starting with a letter"
+		);
+	
+		// Input must be case-insensitive
+		checkSentenceScore(
+			wordScores,
+			"DOGS ARE CUTE",
+			1.5,
+			"case-insensitive input"
+		);
+	
+		// Negative scores:
+		checkSentenceScore(
+			wordScores,
+			"dogs cats",
+			0.5,
+			"negative word score"
+		);
+	
+		// Null map
+		checkSentenceScore(
+			null,
+			"dogs are cute",
+			0.0,
+			"null map"
+		);
+	
+		// Empty map
+		checkSentenceScore(
+			new HashMap<>(),
+			"dogs are cute",
+			0.0,
+			"empty map"
+		);
+	
+		// Null sentence
+		checkSentenceScore(
+			wordScores,
+			null,
+			0.0,
+			"null sentence"
+		);
+	
+		// Empty sentence
+		checkSentenceScore(
+			wordScores,
+			"",
+			0.0,
+			"empty sentence"
+		);
+	
+		// Sentence containing only ignored tokens
+		checkSentenceScore(
+			wordScores,
+			"?smart !fun .",
+			0.0,
+			"sentence with only ignored tokens"
+		);
+	}
 }
