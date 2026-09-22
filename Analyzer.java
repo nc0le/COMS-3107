@@ -71,10 +71,28 @@ public class Analyzer {
 	 *         either input is null
 	 */
 	public static double calculateSentenceScore(Map<String, Double> wordScores, String sentence) {
-		/*
-		 * Implement this method in Step 3
-		 */
-		return 0;
+		if (wordScores == null || wordScores.isEmpty()) {
+			return 0.0;
+		}
+		if (sentence == null || sentence.isEmpty()) {
+			return 0.0;
+		}
+		
+		String[] words = sentence.toLowerCase().split("\\s+");
+		int totalWords = 0;
+		Double totalScore = 0.0;
+
+		for (String word : words) {
+			if (word.isEmpty() || !Character.isLetter(word.charAt(0))) {
+				continue;
+			}
+			totalWords++;
+			totalScore += wordScores.getOrDefault(word, 0.0);
+		}
+		if (totalWords == 0) {
+			return 0.0;
+		}
+		return (Double)totalScore/totalWords;
 	}
 
 	/**
