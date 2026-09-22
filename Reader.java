@@ -1,11 +1,12 @@
 /**
- * @author [YOUR NAME HERE!]
+ * @author Nicole Cui
  *
  * This class contains a method for reading from a file and creating Sentence objects
  * for a sentiment analysis program.
  */
 
-import java.util.Set;
+import java.io.*;
+import java.util.*;
 
 public class Reader {
 	/**
@@ -16,10 +17,48 @@ public class Reader {
 	 * @return Set containing one Sentence object per sentence in the input file; null if filename is null
 	 */
 	public static Set<Sentence> readFile(String filename) {
-		/*
-		 * Implement this method in Step 1
-		 */
-		return null;
+		if (filename == null) {
+			return null;
+		}
+
+		Set<Sentence> sentences = new HashSet<>();
+
+        try (Scanner scanner = new Scanner(new File(filename))) {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+
+				try (Scanner lineScanner = new Scanner(line)) {
+					if (!lineScanner.hasNextInt()) {
+						System.out.println("Missing or invalid score: " + line);
+						continue;
+					}
+					
+					int score = lineScanner.nextInt();
+
+					if (score < -2 || score > 2) {
+						System.out.println("Score is too large: " + score);
+						continue;
+					}
+
+					if (!lineScanner.hasNext()) {
+						System.out.println("Missing text: " + line);
+						continue;
+					}
+					
+					String text = lineScanner.nextLine().trim();
+
+					if (text.isEmpty()) {
+						System.out.println("Missing text: " + line);
+						continue;
+					}
+	
+					sentences.add(new Sentence(score, text));
+				}
+			}
+		} catch (FileNotFoundException e) {
+            return null;
+        }
+		return sentences;
 	}
 
     /**
@@ -28,6 +67,9 @@ public class Reader {
      * Just use it for testing this class. It is not considered for grading.
      */
     public static void main(String[] args) {
-
+		Set<Sentence> sentences = readFile(args[0]);
+		for (Sentence sentence : sentences) {
+			System.out.println(sentence.getScore() + " " + sentence.getText());
+		}
     }
 }
