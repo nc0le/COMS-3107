@@ -41,13 +41,18 @@ public class WordSearch {
 	
 	public static List<String> search(String[] terms, Map<String, Set<String>> map) {
 		ArrayList<String> result = new ArrayList<>();
+
+		if (terms == null) {
+			return result;
+		}
+
 		Map<String, Integer> countMap = new HashMap<>();
 
 		for (String term : terms) {
 			term = term.toLowerCase();
 
 			if (map.containsKey(term)) {
-				HashSet<String> files = (HashSet) map.get(term);
+				Set<String> files = map.get(term);
 
 				for (String file : files) {
 					countMap.put(file, countMap.getOrDefault(file, 0) + 1);
