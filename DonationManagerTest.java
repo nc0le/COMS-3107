@@ -1,7 +1,6 @@
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThrows;
-import java.util.*;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 
 public class DonationManagerTest {
     // fundManager is null returns IllegalStateException
@@ -518,4 +517,75 @@ public class DonationManagerTest {
 
         assertEquals(12000.0, manager.donate("Nicole", "Library", 10000.0), 0.000001);
     }
+
+    // fund balance equal to its target returns zero
+    @Test
+    public void targetReached() {
+        FundManager fm = new FundManager() {
+            @Override
+            public boolean isValidFund(String name) {
+                return true;
+            }
+
+            @Override
+            public double getFundTarget(String name) {
+                return 100.0;
+            }
+
+            @Override
+            public double getFundBalance(String name) {
+                return 100.0;
+            }
+        };
+        UserManager um = new UserManager() {
+            @Override
+            public boolean isValidUser(String name) {
+                return true;
+            }
+
+            @Override
+            public double getBalance(String name) {
+                return 20000.0;
+            }
+        };
+        DonationManager manager = new DonationManager(fm, um);
+
+        assertEquals(0.0, manager.donate("Nicole", "Library", 10.0), 0.000001);
+    }
+
+    // fund balance above its target returns zero
+    @Test
+    public void targetExceeded() {
+        FundManager fm = new FundManager() {
+            @Override
+            public boolean isValidFund(String name) {
+                return true;
+            }
+
+            @Override
+            public double getFundTarget(String name) {
+                return 100.0;
+            }
+
+            @Override
+            public double getFundBalance(String name) {
+                return 120.0;
+            }
+        };
+        UserManager um = new UserManager() {
+            @Override
+            public boolean isValidUser(String name) {
+                return true;
+            }
+
+            @Override
+            public double getBalance(String name) {
+                return 20000.0;
+            }
+        };
+        DonationManager manager = new DonationManager(fm, um);
+
+        assertEquals(0.0, manager.donate("Nicole", "Library", 10.0), 0.000001);
+    }
+
 }

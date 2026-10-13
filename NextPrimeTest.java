@@ -1,11 +1,15 @@
-import static org.junit.Assert.assertEquals;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 public class NextPrimeTest {
 
     @Test
-    public void negativeReturnsNegative() {
+    public void negativeOneReturnsMinusOne() {
         assertEquals(-1, Primes.nextPrime(-1));
+    }
+    
+    @Test
+    public void negativeHundredReturnsMinusOne() {
         assertEquals(-1, Primes.nextPrime(-100));
     }
 
