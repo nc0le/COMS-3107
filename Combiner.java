@@ -10,7 +10,25 @@ import java.util.*;
 
 
 public class Combiner {
+
+    public static <K extends Comparable<? super K>, V> Map<K, Set<V>> combine(Map<K, V>... maps) {
+
+        Map<K, Set<V>> result = new TreeMap<>();
+
+        for (Map<K, V> map : maps) {
+            for (Map.Entry<K, V> entry : map.entrySet()) {
+                Set<V> values =
+                    result.getOrDefault(entry.getKey(), new HashSet<>());
+
+                values.add(entry.getValue());
+                result.put(entry.getKey(), values);
+            }
+        }
+
+        return result;
+    }
 	
+	/*
 	public static Map<String, Set<Integer>> combine(Map<String, Integer> map1, Map<String, Integer> map2) {
 
 		List<Map<String, Integer>> maps = List.of(map1, map2);
@@ -61,5 +79,6 @@ public class Combiner {
 		
 		return result;
 	}
+	*/
 
 }
