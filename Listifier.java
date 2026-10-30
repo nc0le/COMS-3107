@@ -8,7 +8,19 @@ import java.util.*;
  */
 
 public class Listifier {
+
+	public static <T> List<T> listify(T... elements) {
+		List<T> unique = new LinkedList<>();
+
+		for (T element : elements) {
+			if (!unique.contains(element)) {
+				unique.add(element);
+			}
+		}
+		return unique;
+	}
 	
+	/*
 	public static List<Integer> listify(int a, int b, int c, int d) {
 		List<Integer> unique = new LinkedList<>();
 		unique.add(a);
@@ -67,4 +79,5 @@ public class Listifier {
 		if (unique.contains(e) == false) unique.add(e);
 		return unique;
 	}
+	*/
 }
