@@ -21,7 +21,10 @@ public class WordCounter {
     }
 
     public void setDataSource(DataSource source) {
-        this.source = Objects.requireNonNull(source);
+		if (source == null) {
+			throw new NullPointerException();
+		}
+		this.source = source;
     }
 		
 	public Map<String, Integer> countWords() {
